@@ -27,8 +27,8 @@ parse :: String -> ([Number], Map Position Char)
 parse = collectTups . lineTup . lines
   where
     symb = filter ((/= '.') . snd) . zip [0..]
-    numbers = filter (isDigit . snd) . symb
-    other = filter (not . isDigit . snd) . symb
+    numbers = filter (      isDigit . snd) . symb
+    other   = filter (not . isDigit . snd) . symb
     lineTup = zipWith (\i l -> (numbersOnLn i . numbers $ l, symbOnLn i . other $ l)) [0..]
     collectTups l = (concatMap fst l, Map.unions . map snd $ l)
 
@@ -37,8 +37,8 @@ surrounding n = map (uncurry Position) . concat $ vert ++ hor
   where
     Position x y = pos n
     l = length . show . num $ n
-    vert = map (`zip` [y - 1, y, y + 1]) [repeat $ x - 1, repeat $ x + l]
-    hor = map (zip [x - 1, x..x + l]) [repeat $ y - 1, repeat $ y + 1]
+    vert = map (flip zip [y - 1, y, y + 1] . repeat) [x - 1, x + l]
+    hor  = map (     zip [x - 1, x..x + l] . repeat) [y - 1, y + 1]
 
 solution1 :: [Number] -> Map Position Char -> Int
 solution1 l s = sum . map num . filter (any (`Map.member` s) . surrounding) $ l
@@ -53,4 +53,4 @@ solution2 l s = sum . map (ratio . numbersAround) $ gears
     ratio _ = 0
 
 main :: IO ()
-main = interact $ unlines. map show . zipWith uncurry [solution1, solution2] . repeat . parse
+main = interact $ unlines . map show . zipWith uncurry [solution1, solution2] . repeat . parse

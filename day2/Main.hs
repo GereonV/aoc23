@@ -45,9 +45,9 @@ possible :: Turn -> Turn -> Bool
 possible pos x = red x <= red pos && green x <= green pos && blue x <= blue pos
 
 needed :: [Turn] -> Turn
-needed t = Turn { red = maximum . map red $ t,
+needed t = Turn { red   = maximum . map red   $ t,
                   green = maximum . map green $ t,
-                  blue = maximum . map blue $ t }
+                  blue  = maximum . map blue  $ t }
 
 solution1 :: [Game] -> Int
 solution1 = sum . map gameId . filter (all (possible $ Turn 12 13 14) . turns)
