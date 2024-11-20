@@ -1,6 +1,8 @@
+{-# LANGUAGE LambdaCase #-}
+
 import Data.Function (applyWhen)
-import Data.Set qualified as S
 import Data.List (scanl')
+import Data.Set qualified as S
 
 data PuzzleInput = PuzzleInput {piWidth :: Int, piHeight :: Int, piGalaxies :: [(Int, Int)]}
 
@@ -21,8 +23,9 @@ expand ~(PuzzleInput w h g) ex = [(x + exX !! x, y + exY !! y) | ~(x, y) <- g]
     [exX, exY] = zipWith expansions [w, h] $ S.fromList . (<$> g) <$> [fst, snd]
 
 sumMinDists :: [(Int, Int)] -> Int
-sumMinDists [] = 0
-sumMinDists (x : xs) = sum (diff x <$> xs) + sumMinDists xs
+sumMinDists = \case
+  [] -> 0
+  (x : xs) -> sum (diff x <$> xs) + sumMinDists xs
   where
     diff ~(x1, y1) ~(x2, y2) = abs (x1 - x2) + abs (y1 - y2)
 
